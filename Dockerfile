@@ -20,19 +20,18 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Create necessary directories and set permissions
-RUN mkdir -p /app/cache /app/overpass_cache \
+RUN mkdir -p /app/static /app/templates /app/cache /app/overpass_cache \
     && chown -R appuser:appuser /app
 
 # Switch to non-root user
 USER appuser
 
-# Expose port
-EXPOSE 8000
-
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV HOST=0.0.0.0
-ENV PORT=8000
+
+# Expose port (will be overridden by Heroku)
+EXPOSE $PORT
 
 # Run the application
-CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"] 
+CMD ["sh", "-c", "uvicorn api:app --host 0.0.0.0 --port $PORT"] 
