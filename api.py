@@ -6,6 +6,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
+from typing import Dict
 import time
 import uvicorn
 import os
@@ -180,9 +181,9 @@ class PredictRequest(BaseModel):
 
 class PredictResponse(BaseModel):
     prediction: str
-    confidence_scores: dict[str, float]
+    confidence_scores: Dict[str, float] # Use Dict from typing
     why: str
-    features: dict # Return the features used for prediction
+    features: Dict[str, Any] # Use Dict from typing (made more specific with Any)
 
 # --- API Endpoints ---
 @app.get("/", response_class=HTMLResponse)
