@@ -22,8 +22,6 @@ npm-debug.log*
 *.swo
 
 # Project specific
-cache/
-overpass_cache/
 *.csv.intermediate
 
 # Docker
