@@ -55,15 +55,19 @@ ssh ${UBERSPACE_USER}@${UBERSPACE_USER}.uber.space << EOF
     print_message "Setting up Python virtual environment..."
     python3 -m venv venv
     source venv/bin/activate
+    pip install --upgrade pip
     pip install -r requirements.txt
+
+    # Create supervisor config directory if it doesn't exist
+    mkdir -p ~/etc/supervisor.d
 
     # Configure web server
     print_message "Configuring web server..."
     uberspace web backend set / --http --port ${PORT}
 
-    # Set up systemd service
-    print_message "Setting up systemd service..."
-    cat > ~/etc/services.d/${APP_NAME}.ini << EOL
+    # Set up supervisor service
+    print_message "Setting up supervisor service..."
+    cat > ~/etc/supervisor.d/${APP_NAME}.ini << EOL
 [program:${APP_NAME}]
 command=${DEPLOY_DIR}/venv/bin/python app.py --port ${PORT}
 directory=${DEPLOY_DIR}
@@ -77,12 +81,19 @@ EOL
     # Configure reverse proxy
     print_message "Configuring reverse proxy..."
     uberspace web backend set / --http --port ${PORT}
+    
+    # Check if domain exists and remove it if it does
+    if uberspace web domain list | grep -q "${DOMAIN}"; then
+        print_message "Removing existing domain configuration..."
+        uberspace web domain remove ${DOMAIN}
+    fi
+    
+    # Add and configure domain
     uberspace web domain add ${DOMAIN}
     uberspace web domain set ${DOMAIN} --backend /
 
     # Enable service to start on boot
     print_message "Enabling service to start on boot..."
-    supervisord -c ~/etc/supervisord.conf
     supervisorctl reread
     supervisorctl update
     supervisorctl start ${APP_NAME}
