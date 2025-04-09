@@ -21,7 +21,8 @@ COPY . .
 
 # Create necessary directories and set permissions
 RUN mkdir -p /app/static /app/templates /app/cache /app/overpass_cache \
-    && chown -R appuser:appuser /app
+    && chown -R appuser:appuser /app \
+    && chmod -R 755 /app/static /app/templates
 
 # Switch to non-root user
 USER appuser
