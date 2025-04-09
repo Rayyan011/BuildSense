@@ -6,7 +6,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
-from typing import Dict
+from typing import Dict, Any
 import time
 import uvicorn
 import os
@@ -14,6 +14,7 @@ import json
 import hashlib
 from datetime import datetime, timedelta
 import random
+
 
 # --- Constants ---
 POI_RADIUS_METERS = 200
