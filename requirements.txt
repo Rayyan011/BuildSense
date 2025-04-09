@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+requests
+pandas
+scikit-learn
+joblib
+python-dotenv
+overpass
+aiofiles
+jinja2
